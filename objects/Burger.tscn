@@ -1,0 +1,78 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://assets/images/pgt.png" type="Texture" id=1]
+[ext_resource path="res://objects/Burger.gd" type="Script" id=2]
+[ext_resource path="res://assets/audio/punch.wav" type="AudioStream" id=3]
+
+[sub_resource type="RectangleShape2D" id=1]
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 13, 13 )
+
+[sub_resource type="Animation" id=3]
+resource_name = "FadeOut"
+tracks/0/type = "value"
+tracks/0/path = NodePath("../Sprite:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("../Sprite:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 1 ]
+}
+
+[node name="Burger" type="KinematicBody2D"]
+z_index = 2
+script = ExtResource( 2 )
+
+[node name="Sprite" type="Sprite" parent="."]
+position = Vector2( 13, 13 )
+texture = ExtResource( 1 )
+hframes = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 13, 13 )
+shape = SubResource( 1 )
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2( 13, 13 )
+shape = SubResource( 2 )
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+root_node = NodePath("../Timer")
+anims/FadeOut = SubResource( 3 )
+
+[node name="Label" type="Label" parent="."]
+visible = false
+margin_left = 26.0
+margin_top = 5.0
+margin_right = 66.0
+margin_bottom = 19.0
+
+[node name="Punch" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 3 )
+volume_db = -10.0
+
+[connection signal="input_event" from="Area2D" to="." method="_on_Area2D_input_event"]
+[connection signal="finished" from="Punch" to="." method="_on_Punch_finished"]
